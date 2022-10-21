@@ -15,11 +15,13 @@ $y = $_POST['x'];
 
 if(isset($y))
 {
+
+$flag = 0 ;
 foreach($products as $k => $v)
 {
     // echo $k;
    if($v['id'] == $y)
-   { 
+   {
     array_push($_SESSION['carts'],$v);
    }
 }
@@ -38,32 +40,14 @@ foreach($products as $k => $v)
 if($flag  == 0){
     foreach($_SESSION['products'] as $k => $v)
     {
-    if ($v['id'] == $y) { 
-     array_push($_SESSION['carts'],$v);
-     }
-    }
-    }
-
-
-
-else
-{
-    foreach($_SESSION['carts'] as $k => $v)
-    {
-    
         if($v['id']== $y)
         {
-            $v["quantity"]++;
+            $_SESSION['carts'][$k]["quantity"]+= 1;
         }
     }
-}
-
-
+    }
 
 }
 echo json_encode ($_SESSION['carts']);
-
-
-
 
 ?>
