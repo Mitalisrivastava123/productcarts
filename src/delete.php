@@ -1,6 +1,7 @@
 <?php
 session_start();
 $y = $_POST['x'];
+// echo $y;
 
 
 foreach($_SESSION['carts'] as $k => $v)

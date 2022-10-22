@@ -5,6 +5,7 @@ if (!isset($_SESSION['carts'])) {
 }
 
 ?>
+<!-- html start -->
 <!DOCTYPE html>
 <html>
 
@@ -21,8 +22,19 @@ if (!isset($_SESSION['carts'])) {
 
 	<?php include 'config.php'; ?>
 
-	<table id="table1"> </table>
-	<table id="table2"></table>
+
+
+
+	<div id="main">
+		<div id="products">
+		</div>
+	</div>
+	<h1 style="display:none;" id="pro">ADD To CART</h1>
+	<table id="table2" style="background:pink;border:1px solid black;">
+
+	</table>
+	<table id="table3"></table>
+	<!-- script start -->
 	<script>
 		var p2 = <?php echo json_encode($products); ?>
 		// console.log(prod);
@@ -33,7 +45,8 @@ if (!isset($_SESSION['carts'])) {
 			p2.forEach(element => {
 				str1 += "<div id = 'product-101' + class='product'>" + "<img src=" + element.image + "><h3 class='title'><a href='#'>Product" + element.id + "</a><h3><span>Price " + element.price + "<span><a class='add-to-cart' id = " + element.id + "  onclick='add(id)' href='#'>Add to Cart</a></div>";
 
-				$("#table1").html(str1);
+				$("#products").html(str1);
+
 			});
 		}
 
@@ -43,15 +56,15 @@ if (!isset($_SESSION['carts'])) {
 			var y = x;
 			// alert(y);
 			$.ajax({
-				url: "testing1.php",
+				url: "addproducts.php",
 				type: 'POST',
 				data: "x=" + y,
 				dataType: "json",
 			}).done(function(res) {
 				// json.parse(res);
+				$("#pro").css('display', 'block');
 				display_cart(res);
 				// console.log(res);
-
 				//  $("#table2").html(res);
 			})
 		}
@@ -67,26 +80,72 @@ if (!isset($_SESSION['carts'])) {
 				dataType: "json",
 			}).done(function(res420) {
 				console.log(res420);
+				if (confirm("Are you sure you want to remove this product ")) {
+					display_cart(res420);
+				}
+				return false;
+			})
+		}
+
+		function plus(x1) {
+			var y = x1;
+			// console.log(y);
+			$.ajax({
+				url: "quantityincrease.php",
+				type: 'POST',
+				data: "x=" + y,
+				dataType: "json",
+			}).done(function(res420) {
+				console.log(res420);
+				display_cart(res420);
+			})
+		}
+
+		function del(x1) {
+			var y = x1;
+			// console.log(y);
+			$.ajax({
+				url: "quantitydecrease.php",
+				type: 'POST',
+				data: "x=" + y,
+				dataType: "json",
+			}).done(function(res420) {
+				console.log(res420);
+
 				display_cart(res420);
 
+			})
+		}
 
+		function emptycart() {
+			// console.log(y);
+			$.ajax({
+				url: "emptycart.php",
+				type: 'POST',
+				dataType: "json",
+			}).done(function(res420) {
+				// console.log(res420);
+				display_cart(res420);
 			})
 		}
 
 		function display_cart(res) {
 			// alert("hello");
 			var str1 = "";
+
 			if (res == []) {
 				str1 = "";
 			} else {
 				res.forEach(element => {
-					str1 += "<tr><td>" + element.id + "</td><td>" + element.name + "</td><td>" + "<img src=" + element.image + "></td><td>" + element.price + "</td><td><td><button type='button'   onclick='del(id)' id=" + element.id + " >-</button></td><td>" + element.quantity + "</td></td><td><button type='button' onclick='plus(id)' id=" + element.id + ">+</button></td><td><button type='button' style='background:black;padding:10px;color:#fff;border:none;' class='delete' onclick='del1(" + element.id + ")'  value='" + element + "' id = " + element.id + " >delete</button></tr>";
+					str1 += "<tr><td>" + element.id + "</td><td>" + element.name + "</td><td>" + "<img src=" + element.image + "></td><td>" + element.price + "</td><td><td><button type='button'   onclick='del(id)' id=" + element.id + " >-</button></td><td>" + element.quantity + "</td></td><td><button type='button' onclick='plus(id)' id=" + element.id + ">+</button></td><td><button type='button' style='background:black;padding:10px;color:#fff;border:none;' class='delete' onclick='del1(" + element.id + ")'  value='" + element + "' id = " + element.id + " >delete</button><td></tr>";
 				});
 			}
+			var empty1 = "<button type='submit' id='btn1' onclick='emptycart()' style='background:#3e9cbf;border:none;color:#fff;padding:10px;'>Empty Cart</button>";
+			$("#table3").html(empty1);
 			$("#table2").html(str1);
 		}
 	</script>
-	<script src="./script.js"></script>
+	<script src="script.js"></script>
 	<?php include 'footer.php'; ?>
 
 </body>
